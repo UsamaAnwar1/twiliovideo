@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:twiliovideo/config.dart';
 
 class TwilioFunctionsService {
   // TwilioFunctionsService._();
   // static final instance = TwilioFunctionsService._();
   TwilioFunctionsService();
   final http.Client client = http.Client();
-  final accessTokenUrl =
-      'https://twiliochatroomaccesstoken-7838.twil.io/accessToken';
+  final accessTokenUrl = AppConfig.accessTokenUrl;
 
   createToken(String identity) async {
     try {
