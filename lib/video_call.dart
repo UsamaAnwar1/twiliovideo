@@ -216,13 +216,14 @@ class _VideoCallState extends State<VideoCall> with WidgetsBindingObserver {
         // var ok = await TwilioProgrammableVideo.requestPermissionForCameraAndMicrophone();
         // await TwilioProgrammableVideo.setSpeakerphoneOn(true);
         final sources = await CameraSource.getSources();
-
+        // await TwilioProgrammableVideo.setAudioSettings(speakerphoneEnabled: false, bluetoothPreferred: false);
         _capturer = CameraCapturer(
           sources.firstWhere((source) => source.isFrontFacing),
         );
         _localVideoTrack = LocalVideoTrack(true, _capturer!);
         // var widget = localVideoTrack.widget();
-
+        await TwilioProgrammableVideo.setAudioSettings(
+            speakerphoneEnabled: false, bluetoothPreferred: true);
         print(_capturer);
         trackId = const Uuid().v4();
         print(trackId);
@@ -252,6 +253,7 @@ class _VideoCallState extends State<VideoCall> with WidgetsBindingObserver {
 
         print(_room);
         // setState(() {});
+
         _room?.onConnected.listen(_onConnected);
         _room?.onConnectFailure.listen(_onConnectFailure);
         _room?.onParticipantConnected.listen(_onParticipantConnected);
@@ -342,127 +344,202 @@ class _VideoCallState extends State<VideoCall> with WidgetsBindingObserver {
         // appBar: AppBar(
         //   title: const Text('Video'),
         // ),
-        body: Stack(
+        body: Column(
           children: [
-            _buildParticipants(context)
-            // Container(height: 400, child: _participants[0].child),
-            // Container(height: 200, child: _participants[0].child),
+            Stack(
+              children: [
+                _buildParticipants(context),
+                // Container(height: 400, child: _participants[0].child),
+                // Container(height: 200, child: _participants[0].child),
 
-            /* Expanded(
-                child: FutureBuilder(
-                  future: _completer.future,
-                  builder: (context, AsyncSnapshot<Room> snapshot) {
-                    if (snapshot.hasError) {
-                      return Center(
-                        child:
-                            Text("error occurred while establishing connection"),
-                      );
-                    }
-                    if (snapshot.hasData) {
-                      return Container(
-                        // margin: EdgeInsets.only(bottom: 80),
+                /* Expanded(
+                    child: FutureBuilder(
+                      future: _completer.future,
+                      builder: (context, AsyncSnapshot<Room> snapshot) {
+                        if (snapshot.hasError) {
+                          return Center(
+                            child:
+                                Text("error occurred while establishing connection"),
+                          );
+                        }
+                        if (snapshot.hasData) {
+                          return Container(
+                            // margin: EdgeInsets.only(bottom: 80),
     
-                        child: _localVideoTrack!.widget(key: ValueKey('test')),
-                      );
-                    }
-                    return Center(child: CircularProgressIndicator());
-                  },
-                ),
-              ), */
-            // _buildParticipants(context)
-            /*  Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Placeholder(child: _remoteParticipantWidget),
-                ),
-              ),
+                            child: _localVideoTrack!.widget(key: ValueKey('test')),
+                          );
+                        }
+                        return Center(child: CircularProgressIndicator());
+                      },
+                    ),
+                  ), */
+                // _buildParticipants(context)
+                /*  Expanded(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Placeholder(child: _remoteParticipantWidget),
+                    ),
+                  ),
      */
-            //  Positioned(
-            /*    top: 100,
-                left: 10,
-                child: SizedBox(
-                  height: 150,
-                  width: 150,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Placeholder(child: _remoteParticipantWidget),
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 10,
-                left: 0,
-                right: 0,
-                child: Container(
-                  child: Row(
-                    children: [
-                      ElevatedButton(
-                        onPressed: () => switchCamera(),
-                        style: ElevatedButton.styleFrom(
-                          shape: CircleBorder(),
-                          padding: const EdgeInsets.all(10),
-                        ),
-                        child: Icon(Icons.switch_camera),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          toggleAudioEnabled();
-                          // _localAudioTrack!.enable(!_isAudioMuted);
-                          setState(() {
-                            _isAudioMuted = !_isAudioMuted;
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: CircleBorder(),
-                          padding: const EdgeInsets.all(10),
-                          primary: _isAudioMuted ? Colors.red : Colors.blue,
-                        ),
-                        child: Icon(_isAudioMuted ? Icons.mic_off : Icons.mic),
-                      ),
-                      ElevatedButton(
-                        onPressed: () async {
-                          // if (_isVideoMuted) {
-                          toggleVideoEnabled();
-    
-                          // await _localVideoTrack!.enable(
-                          //   !_localVideoTrack!.isEnabled,
-                          // );
-                          // _onVideoEnabledStreamController
-                          //     .add(_localVideoTrack!.isEnabled);
-    
-                          setState(() {
-                            _isVideoMuted = !_isVideoMuted;
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: CircleBorder(),
-                          padding: const EdgeInsets.all(10),
-                          primary: _isVideoMuted ? Colors.red : Colors.blue,
-                        ),
-                        child: Icon(
-                            _isVideoMuted ? Icons.videocam_off : Icons.videocam),
-                      ),
-                      ClipOval(
-                        child: Material(
-                          color: Colors.red, // Button color
-                          child: InkWell(
-                            splashColor: Colors.grey, // Splash color
-                            onTap: () => _onHangup(),
-                            child: SizedBox(
-                              width: 56,
-                              height: 56,
-                              child: Icon(
-                                Icons.phone,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ), */
+                //  Positioned(
+                //   top: 100,
+                //   left: 10,
+                //   child: SizedBox(
+                //     height: 150,
+                //     width: 150,
+                //     child: ClipRRect(
+                //       borderRadius: BorderRadius.circular(10),
+                //       child: Placeholder(child: _remoteParticipantWidget),
+                //     ),
+                //   ),
+                // ),
+                // Positioned(
+                //   bottom: 10,
+                //   left: 0,
+                //   right: 0,
+                //   child: Container(
+                //     child: Row(
+                //       children: [
+                //         ElevatedButton(
+                //           onPressed: () => switchCamera(),
+                //           style: ElevatedButton.styleFrom(
+                //             shape: CircleBorder(),
+                //             padding: const EdgeInsets.all(10),
+                //           ),
+                //           child: Icon(Icons.switch_camera),
+                //         ),
+                //         ElevatedButton(
+                //           onPressed: () {
+                //             toggleAudioEnabled();
+                //             // _localAudioTrack!.enable(!_isAudioMuted);
+                //             setState(() {
+                //               _isAudioMuted = !_isAudioMuted;
+                //             });
+                //           },
+                //           style: ElevatedButton.styleFrom(
+                //             shape: CircleBorder(),
+                //             padding: const EdgeInsets.all(10),
+                //             primary: _isAudioMuted ? Colors.red : Colors.blue,
+                //           ),
+                //           child:
+                //               Icon(_isAudioMuted ? Icons.mic_off : Icons.mic),
+                //         ),
+                //         ElevatedButton(
+                //           onPressed: () async {
+                //             // if (_isVideoMuted) {
+                //             toggleVideoEnabled(_isVideoMuted);
+
+                //             // await _localVideoTrack!.enable(
+                //             //   !_localVideoTrack!.isEnabled,
+                //             // );
+                //             // _onVideoEnabledStreamController
+                //             //     .add(_localVideoTrack!.isEnabled);
+
+                //             setState(() {
+                //               _isVideoMuted = !_isVideoMuted;
+                //             });
+                //           },
+                //           style: ElevatedButton.styleFrom(
+                //             shape: CircleBorder(),
+                //             padding: const EdgeInsets.all(10),
+                //             primary: _isVideoMuted ? Colors.red : Colors.blue,
+                //           ),
+                //           child: Icon(_isVideoMuted
+                //               ? Icons.videocam_off
+                //               : Icons.videocam),
+                //         ),
+                //         ClipOval(
+                //           child: Material(
+                //             color: Colors.red, // Button color
+                //             child: InkWell(
+                //               splashColor: Colors.grey, // Splash color
+                //               onTap: () => _onHangup(),
+                //               child: SizedBox(
+                //                 width: 56,
+                //                 height: 56,
+                //                 child: Icon(
+                //                   Icons.phone,
+                //                   color: Colors.white,
+                //                 ),
+                //               ),
+                //             ),
+                //           ),
+                //         )
+                //       ],
+                //     ),
+                //   ),
+                // ),
+              ],
+            ),
+            // Container(
+            //   child: Row(
+            //     children: [
+            //       ElevatedButton(
+            //         onPressed: () => switchCamera(),
+            //         style: ElevatedButton.styleFrom(
+            //           shape: CircleBorder(),
+            //           padding: const EdgeInsets.all(10),
+            //         ),
+            //         child: Icon(Icons.switch_camera),
+            //       ),
+            //       ElevatedButton(
+            //         onPressed: () {
+            //           toggleAudioEnabled();
+            //           // _localAudioTrack!.enable(!_isAudioMuted);
+            //           setState(() {
+            //             _isAudioMuted = !_isAudioMuted;
+            //           });
+            //         },
+            //         style: ElevatedButton.styleFrom(
+            //           shape: CircleBorder(),
+            //           padding: const EdgeInsets.all(10),
+            //           primary: _isAudioMuted ? Colors.red : Colors.blue,
+            //         ),
+            //         child: Icon(_isAudioMuted ? Icons.mic_off : Icons.mic),
+            //       ),
+            //       ElevatedButton(
+            //         onPressed: () async {
+            //           // if (_isVideoMuted) {
+            //           toggleVideoEnabled(!_isVideoMuted);
+
+            //           // await _localVideoTrack!.enable(
+            //           //   !_localVideoTrack!.isEnabled,
+            //           // );
+            //           // _onVideoEnabledStreamController
+            //           //     .add(_localVideoTrack!.isEnabled);
+
+            //           setState(() {
+            //             _isVideoMuted = !_isVideoMuted;
+            //           });
+            //         },
+            //         style: ElevatedButton.styleFrom(
+            //           shape: CircleBorder(),
+            //           padding: const EdgeInsets.all(10),
+            //           primary: _isVideoMuted ? Colors.red : Colors.blue,
+            //         ),
+            //         child: Icon(
+            //             _isVideoMuted ? Icons.videocam_off : Icons.videocam),
+            //       ),
+            //       ClipOval(
+            //         child: Material(
+            //           color: Colors.red, // Button color
+            //           child: InkWell(
+            //             splashColor: Colors.grey, // Splash color
+            //             onTap: () => _onHangup(),
+            //             child: SizedBox(
+            //               width: 56,
+            //               height: 56,
+            //               child: Icon(
+            //                 Icons.phone,
+            //                 color: Colors.white,
+            //               ),
+            //             ),
+            //           ),
+            //         ),
+            //       )
+            //     ],
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -480,13 +557,16 @@ class _VideoCallState extends State<VideoCall> with WidgetsBindingObserver {
       BuildContext context, Size size, List<Widget> children) {
     if (_participants.length == 1) {
       children.add(
-        Card(child: _participants[0]),
+        Container(
+            height: MediaQuery.of(context).size.height - 60,
+            width: MediaQuery.of(context).size.width,
+            child: Card(child: _participants[0])),
       );
     }
     if (_participants.length == 2) {
       children.add(
         Container(
-          height: MediaQuery.of(context).size.height,
+          height: MediaQuery.of(context).size.height - 60,
           width: MediaQuery.of(context).size.width,
           child: Card(
             child: _participants[0],
@@ -496,7 +576,7 @@ class _VideoCallState extends State<VideoCall> with WidgetsBindingObserver {
 
       children.add(
         Container(
-          height: MediaQuery.of(context).size.height / 2,
+          height: MediaQuery.of(context).size.height / 2 - 30,
           width: MediaQuery.of(context).size.width,
           child: Card(
             child: _participants[1],
@@ -507,7 +587,7 @@ class _VideoCallState extends State<VideoCall> with WidgetsBindingObserver {
     if (_participants.length == 3) {
       children.add(
         Container(
-          height: MediaQuery.of(context).size.height,
+          height: MediaQuery.of(context).size.height - 60,
           width: MediaQuery.of(context).size.width,
           child: Card(
             child: _participants[0],
@@ -517,7 +597,7 @@ class _VideoCallState extends State<VideoCall> with WidgetsBindingObserver {
 
       children.add(
         Container(
-          height: MediaQuery.of(context).size.height / 2,
+          height: MediaQuery.of(context).size.height / 2 - 30,
           width: MediaQuery.of(context).size.width,
           child: Card(
             child: _participants[1],
@@ -526,7 +606,7 @@ class _VideoCallState extends State<VideoCall> with WidgetsBindingObserver {
       );
       children.add(
         Container(
-          height: MediaQuery.of(context).size.height / 2,
+          height: MediaQuery.of(context).size.height / 2 - 30,
           width: MediaQuery.of(context).size.width / 2,
           child: Card(
             child: _participants[2],
@@ -537,7 +617,7 @@ class _VideoCallState extends State<VideoCall> with WidgetsBindingObserver {
     if (_participants.length == 4) {
       children.add(
         Container(
-          height: MediaQuery.of(context).size.height,
+          height: MediaQuery.of(context).size.height - 60,
           width: MediaQuery.of(context).size.width,
           child: Card(
             child: _participants[0],
@@ -546,7 +626,7 @@ class _VideoCallState extends State<VideoCall> with WidgetsBindingObserver {
       );
       children.add(
         Container(
-          height: MediaQuery.of(context).size.height,
+          height: MediaQuery.of(context).size.height - 60,
           width: MediaQuery.of(context).size.width / 2,
           child: Card(
             child: _participants[1],
@@ -555,7 +635,7 @@ class _VideoCallState extends State<VideoCall> with WidgetsBindingObserver {
       );
       children.add(
         Container(
-          height: MediaQuery.of(context).size.height / 2,
+          height: MediaQuery.of(context).size.height / 2 - 30,
           width: MediaQuery.of(context).size.width,
           child: Card(
             child: _participants[2],
@@ -564,7 +644,7 @@ class _VideoCallState extends State<VideoCall> with WidgetsBindingObserver {
       );
       children.add(
         Container(
-          height: MediaQuery.of(context).size.height / 2,
+          height: MediaQuery.of(context).size.height / 2 - 30,
           width: MediaQuery.of(context).size.width / 2,
           child: Card(
             child: _participants[3],
