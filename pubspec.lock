@@ -104,6 +104,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
+  flutter_easy_permission:
+    dependency: "direct main"
+    description:
+      name: flutter_easy_permission
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.2"
   flutter_easyloading:
     dependency: "direct main"
     description:
@@ -192,7 +199,7 @@ packages:
     source: hosted
     version: "1.8.1"
   permission_handler:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: permission_handler
       url: "https://pub.dartlang.org"

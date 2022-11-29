@@ -1,9 +1,14 @@
 import 'dart:async';
+
 import 'dart:io';
 import "dart:math" as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background/flutter_background.dart';
+import 'package:flutter_easy_permission/constants.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 import 'package:twilio_programmable_video/twilio_programmable_video.dart';
 import 'package:twiliovideo/twilioservice.dart';
 import 'package:twiliovideo/video_call.dart';
@@ -28,6 +33,88 @@ class _HomePageState extends State<HomePage> {
         defType: 'drawable'), // Default is ic_launcher from folder mipmap
   );
   TextEditingController nameController = TextEditingController();
+
+  // FlutterEasyPermission? _easyPermission =;
+  Permission _permission = Permission.bluetooth;
+  PermissionStatus _permissionStatus = PermissionStatus.denied;
+
+  bool permGranted = false;
+
+  // Future<PermissionStatus> _getBlutoothPermission() async {
+  //   if (defaultTargetPlatform == TargetPlatform.android) {
+  //     final setting = await requestPermissionsIOS();
+  //     if (setting.authorizationStatus == AuthorizationStatus.authorized) {
+  //       return PermissionStatus.granted;
+  //     } else {
+  //       return PermissionStatus.denied;
+  //     }
+  //   } else {
+  //     return Permission.bluetooth.request();
+  //   }
+  // }
+  void _listenForPermissionStatus() async {
+    // final status = await _permission.status;
+    // setState(() => _permissionStatus = status);
+  }
+
+  Future<void> requestPermission() async {
+    if (_permissionStatus.isDenied) {
+      permGranted = false;
+      Map<Permission, PermissionStatus> statuses = await [
+        Permission.bluetoothScan,
+        Permission.bluetoothAdvertise,
+        Permission.bluetoothConnect
+      ].request();
+      if (statuses[Permission.bluetoothScan]!.isGranted &&
+          statuses[Permission.bluetoothAdvertise]!.isGranted &&
+          statuses[Permission.bluetoothConnect]!.isGranted) {
+        permGranted = true;
+      } //check each permission status after.
+    }
+  }
+
+  getPermission() {
+    switch (_permissionStatus) {
+      case PermissionStatus.denied:
+        return false;
+      case PermissionStatus.granted:
+        return true;
+      case PermissionStatus.limited:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  void initState() {
+    super.initState();
+    _listenForPermissionStatus();
+//     const permissions = [Permissions.];
+// const permissionGroup = [PermissionGroup.Bluetooth];
+//     FlutterEasyPermission.request(
+//                  perms: permissions,permsGroup: permissionGroup,rationale:"Test permission requests here");
+//     _easyPermission = FlutterEasyPermission()
+//       ..addPermissionCallback(
+//         onGranted: (requestCode, perms, perm) {
+//           debugPrint("Android Authorized:$perms");
+//           debugPrint("iOS Authorized:$perm");
+//         },
+//         onDenied: (requestCode, perms, perm, isPermanent) {
+//           if (isPermanent) {
+//             FlutterEasyPermission.showAppSettingsDialog(title: "Camera");
+//           } else {
+//             debugPrint("Android Deny authorization:$perms");
+//             debugPrint("iOS Deny authorization:$perm");
+//           }
+//         },
+//       );
+  }
+
+  void dispose() {
+    // _easyPermission!.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,10 +148,13 @@ class _HomePageState extends State<HomePage> {
                 // onPressed: () => _connectToRoom(),
 
                 onPressed: () async {
+                  await requestPermission();
+                  //bool p = getPermission();
+
                   bool hasPermissions = await FlutterBackground.hasPermissions;
                   bool success = await FlutterBackground.initialize(
                       androidConfig: androidConfig);
-                  bool bg = await FlutterBackground.enableBackgroundExecution();
+                  // bool bg = await FlutterBackground.enableBackgroundExecution();
                   Navigator.of(context).push(
                     MaterialPageRoute(
                         builder: (context) => VideoCall(

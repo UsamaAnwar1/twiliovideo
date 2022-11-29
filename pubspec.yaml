@@ -40,6 +40,8 @@ dependencies:
   flutter_easyloading: ^3.0.5
   wakelock: ^0.6.2
   flutter_background: ^1.1.0
+  flutter_easy_permission: ^1.1.2
+  permission_handler: ^9.2.0
 
 dev_dependencies:
   flutter_test:

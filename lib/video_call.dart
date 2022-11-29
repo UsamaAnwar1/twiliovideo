@@ -223,7 +223,7 @@ class _VideoCallState extends State<VideoCall> with WidgetsBindingObserver {
         _localVideoTrack = LocalVideoTrack(true, _capturer!);
         // var widget = localVideoTrack.widget();
         await TwilioProgrammableVideo.setAudioSettings(
-            speakerphoneEnabled: false, bluetoothPreferred: true);
+            speakerphoneEnabled: false, bluetoothPreferred: false);
         print(_capturer);
         trackId = const Uuid().v4();
         print(trackId);
